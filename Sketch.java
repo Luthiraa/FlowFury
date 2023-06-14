@@ -2,8 +2,8 @@ import processing.core.*;
 
 public class Sketch extends PApplet {
   static boolean barriers = false;
-  PImage[] gates;
-  PImage[] obstacles;
+
+  PImage island;
   PImage mainMenu;
   PImage canoe;
   float canoeX; // canoe's x-coordinate
@@ -37,13 +37,7 @@ public class Sketch extends PApplet {
     gateWidth = 100;
     gateHeight = 60;
     canoe = loadImage("images/canoe.png");
-    gates = new PImage[2];
-    gates[0] = loadImage("images/island.png");
-    gates[1] = loadImage("images/rock.png");
-
-    obstacles = new PImage[2];
-    obstacles[0] = loadImage("images/island.png");
-    obstacles[1] = loadImage("images/rock.png");
+    island = loadImage("images/island.png");
 
     mainMenu = loadImage("images/MainMenu.png");
     score = 0;
@@ -102,22 +96,28 @@ public class Sketch extends PApplet {
       }
 
       // Check collision with the gate
+        // Check collision with the gate
       if (canoeX > gateX && canoeX < gateX + gateWidth && canoeY > gateY && canoeY < gateY + gateHeight) {
         score++;
-        canoeAngle += 0.001;
-        canoeSpeed += 0.1;
-        gateX = random(0, width - gateWidth);
-        gateY = random(0, height / 2 - gateHeight);
+
+        // 20% chance to switch window
+        if (random(0, 1) < 0.2) {
+          isGame = false;
+          isMainMenu = true;
+        } else {
+          canoeAngle += 0.01;
+          canoeSpeed += 0.3;
+          gateX = random(0, width - gateWidth);
+          gateY = random(0, height / 2 - gateHeight);
+        }
       }
 
-      // Draw the gate
-      fill(0, 255, 0); // green color
-      rect(gateX, gateY, gateWidth, gateHeight);
+      
+      image(island, gateX,gateY);
+      // rect(gateX, gateY, gateWidth, gateHeight);
 
       // Draw the obstacles (island and rock) on top of the gates
-      for (PImage obstacle : obstacles) {
-        image(obstacle, random(width - 19), random(height - 19));
-      }
+
 
       // Draw the canoe
       pushMatrix();

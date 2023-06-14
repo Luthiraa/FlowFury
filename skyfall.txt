@@ -1,0 +1,192 @@
+import processing.core.*;
+
+public class Sketch extends PApplet {
+
+  private Game game;
+
+  public void settings() {
+    size(Game.WIDTH, Game.HEIGHT);
+  }
+
+  public void setup() {
+    game = new Game();
+    game.setup();
+  }
+
+  public void draw() {
+    background(255);
+
+    if (!game.isGameOver()) {
+      game.handleInput();
+      game.update();
+      game.checkCollisions();
+    }
+
+    game.render();
+  }
+
+  public class Game {
+    // Game window dimensions
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 600;
+
+    // Player's canoe properties
+    private Canoe canoe;
+
+    // Obstacle properties
+    private Obstacle[] obstacles;
+
+    // Game state
+    private boolean gameOver;
+    private int score;
+
+    public void setup() {
+      canoe = new Canoe(WIDTH / 2, HEIGHT - 50, 5);
+      obstacles = new Obstacle[5];
+      generateObstacles();
+      gameOver = false;
+      score = 0;
+    }
+
+    public void handleInput() {
+      canoe.handleInput();
+    }
+
+    public void update() {
+      canoe.update();
+      for (Obstacle obstacle : obstacles) {
+        obstacle.update(canoe.getSpeed());
+        if (obstacle.isOutOfBounds()) {
+          obstacle.reset(WIDTH);
+          score++;
+        }
+      }
+    }
+
+    public void checkCollisions() {
+      for (Obstacle obstacle : obstacles) {
+        if (canoe.checkCollision(obstacle)) {
+          gameOver = true;
+          break;
+        }
+      }
+    }
+
+    public void render() {
+      canoe.render();
+      for (Obstacle obstacle : obstacles) {
+        obstacle.render();
+      }
+      drawScore();
+
+      if (gameOver) {
+        drawGameOver();
+      }
+    }
+
+    private void drawScore() {
+      fill(0);
+      textSize(24);
+      textAlign(LEFT);
+      text("Score: " + score, 10, 30);
+    }
+
+    private void drawGameOver() {
+      fill(255, 0, 0);
+      textSize(36);
+      textAlign(CENTER);
+      text("Game Over", WIDTH / 2, HEIGHT / 2);
+    }
+
+    private void generateObstacles() {
+      for (int i = 0; i < obstacles.length; i++) {
+        obstacles[i] = new Obstacle(random(WIDTH - Obstacle.SIZE), random(-HEIGHT, 0));
+      }
+    }
+  }
+
+  public class Canoe {
+    private float x;
+    private float y;
+    private float speed;
+    private static final float WIDTH = 50;
+    private static final float HEIGHT = 30;
+
+    public Canoe(float x, float y, float speed) {
+      this.x = x;
+      this.y = y;
+      this.speed = speed;
+    }
+
+    public void handleInput() {
+      if (keyPressed && (key == 'a' || key == 'A')) {
+        x -= speed;
+      } else if (keyPressed && (key == 'd' || key == 'D')) {
+        x += speed;
+      }
+
+      x = constrain(x, 0, width - WIDTH);
+    }
+
+    public void update() {
+      // No additional updates needed for the canoe
+    }
+
+    public float getSpeed() {
+      return speed;
+    }
+
+    public void render() {
+      fill(0, 0, 255);
+      rect(x, y, WIDTH, HEIGHT);
+    }
+
+    public boolean checkCollision(Obstacle obstacle) {
+      return collideRectRect(x, y, WIDTH, HEIGHT, obstacle.getX(), obstacle.getY(), Obstacle.SIZE, Obstacle.SIZE);
+    }
+  }
+
+  public class Obstacle {
+    private float x;
+    private float y;
+    private static final float SIZE = 30;
+
+    public Obstacle(float x, float y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    public void update(float speed) {
+      y += speed;
+    }
+
+    public boolean isOutOfBounds() {
+      return y > height;
+    }
+
+    public void reset(float width) {
+      y = random(-height, 0);
+      x = random(width - SIZE);
+    }
+
+    public float getX() {
+      return x;
+    }
+
+    public float getY() {
+      return y;
+    }
+
+    public void render() {
+      fill(255, 0, 0);
+      rect(x, y, SIZE, SIZE);
+    }
+  }
+  
+  public boolean collideRectRect(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+    if (x1 + w1 >= x2 && x1 <= x2 + w2 && y1 + h1 >= y2 && y1 <= y2 + h2) {
+      return true;
+    }
+    return false;
+  }
+}
