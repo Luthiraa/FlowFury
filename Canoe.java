@@ -18,9 +18,12 @@ public class Canoe {
     this.speed = speed;
     this.angle = angle;
   }
-
-
-
+    public Canoe(float x, float y, float speed, float angle) {
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.angle = angle;
+  }
   public void display() {
     // Draw the canoe
     parent.pushMatrix();
@@ -60,5 +63,8 @@ public class Canoe {
 
   public float getAngle() {
     return angle;
+  }
+  public void resetCanoe(){
+
   }
 }

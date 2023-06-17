@@ -13,6 +13,7 @@ public class Sketch extends PApplet {
   boolean isGameOver = false;
   boolean rndFact = false;
   Gate gate;
+  int attempts = 0;
   String text;
   String username = "";
   boolean isLeftKeyPressed; // flag for left arrow key
@@ -46,7 +47,19 @@ public class Sketch extends PApplet {
     return (int) random(min, max + 1);
   }
 
+  public void mouseClicked() {
+    int randomNumber = getRandomNumber(1, 10);
+    println("Random Number: " + randomNumber);
+      if (getCurrentState() == GameState.GAME_OVER) {
+    // Check if the "Play Again" button is clicked
+    if (mouseX >= width / 2 - 50 && mouseX <= width / 2 + 50 &&
+        mouseY >= height / 2 + 35 && mouseY <= height / 2 + 65) {
+      resetGame(); // Call the method to reset the game
+    }
+  }
+  }
   public void draw() {
+    
     if (score==25){
       System.out.println("You reached a score of 25");
     }
@@ -69,6 +82,7 @@ public class Sketch extends PApplet {
   }
 
 private void drawMainMenu() {
+  
   image(mainMenu, 0, 0);
   // 99,194 - 368,308
   
@@ -143,42 +157,13 @@ private void drawMainMenu() {
     text("Score: " + score, 10, 30);
   }
 
-private void drawGameOver() {
-  background(0); // Set background color to black
-
-  // Draw game over screen
-  fill(255);
-  textSize(40);
-  textAlign(CENTER);
-  text("Game Over", width / 2, height / 2 - 50);
   
-  // Draw play again button
-  fill(0, 255, 0); // Green color
-  rectMode(CENTER);
-  rect(width / 2, height / 2 + 50, 200, 60); // Button dimensions
-  
-  // Draw play again text
-  fill(255);
-  textSize(24);
-  text("Play Again", width / 2, height / 2 + 55);
-}
   private enum GameState {
     MAIN_MENU,
     GAME,
     GAME_OVER
   }
   
-  private GameState getCurrentState() {
-    if (isMainMenu) {
-      return GameState.MAIN_MENU;
-    } else if (isGame) {
-      return GameState.GAME;
-    } else if (isGameOver) {
-      return GameState.GAME_OVER;
-    } else {
-      throw new IllegalStateException("Unknown game state.");
-    }
-  }
   
   private void setMainMenu() {
     isMainMenu = true;
@@ -192,12 +177,14 @@ private void drawGameOver() {
     isGameOver = false;
   }
   
-  private void setGameOver() {
-    isMainMenu = false;
-    isGame = false;
-    isGameOver = true;
-    leaderboard.addScore(username, score);
-  }
+private void setGameOver() {
+  isMainMenu = false;
+  isGame = false;
+  isGameOver = true;
+  leaderboard.addScore(username, score, attempts += 1);
+  SortedLeaderboardPrinter leaderboardPrinter = new SortedLeaderboardPrinter();
+  leaderboardPrinter.printLeaderboardSortedByScore();
+}
   
   public void keyPressed() {
     barriers = true;
@@ -217,28 +204,15 @@ private void drawGameOver() {
     }
   }
 
-public void mouseClicked() {
-    if (mouseX >= 98 && mouseX <= 369 && mouseY >= 194 && mouseY <= 307) {
+public void mousePressed() {
+  if (mouseX >= 98 && mouseX <= 369 && mouseY >= 194 && mouseY <= 307) {
     if (!isGame && isMainMenu) {
       // Enable username input
       isEnteringUsername = true;
       username = "";
     }
   }
-  if (getCurrentState() == GameState.GAME_OVER) {
-    // Check if the mouse is inside the play again button
-    if (mouseX >= width / 2 - 100 && mouseX <= width / 2 + 100 &&
-        mouseY >= height / 2 && mouseY <= height / 2 + 60) {
-      // Reset the game and play again
-      resetGame();
-    }
-  }
 }
-private void resetGame() {
-  score = 0;
-  setMainMenu();
-}
-
 
 public void keyTyped() {
   if (isEnteringUsername) {
@@ -256,5 +230,44 @@ public void keyTyped() {
     }
   }
 }
+private void drawGameOver() {
+  background(0); // Draw a black background
 
+  // Display game over text
+  fill(255);
+  textSize(30);
+  textAlign(CENTER);
+  text("Game Over", width / 2, height / 2 - 50);
+
+  // Display final score
+  textSize(24);
+  text("Final Score: " + score, width / 2, height / 2);
+
+  // Display play again button
+  textSize(20);
+  text("Play Again", width / 2, height / 2 + 50);
 }
+
+
+private void resetGame() {
+  // Reset necessary variables and states
+  score = 0;
+  canoe.setX( width / 2);
+  canoe.setY(height -100);
+  canoe.setSpeed(5);
+  canoe.setAngle(0);
+  setMainMenu();
+}
+  private GameState getCurrentState() {
+    if (isMainMenu) {
+      return GameState.MAIN_MENU;
+    } else if (isGame) {
+      return GameState.GAME;
+    } else if (isGameOver) {
+      return GameState.GAME_OVER;
+    } else {
+      throw new IllegalStateException("Unknown game state.");
+    }
+  }
+}
+
