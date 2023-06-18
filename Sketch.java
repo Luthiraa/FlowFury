@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+
+
 import processing.core.*;
 
 public class Sketch extends PApplet {
@@ -14,16 +20,17 @@ public class Sketch extends PApplet {
   boolean rndFact = false;
   Gate gate;
   int attempts = 0;
-  String text;
   String username = "";
   boolean isLeftKeyPressed; // flag for left arrow key
   boolean isRightKeyPressed; // flag for right arrow key
-
+  private int countdownTimer = 5;
+  private boolean isCountdownActive = false;
+  private long countdownStartTime;
   static int score; // player's score
 
   public void settings() {
     size(800, 400);
-    text = loadTextFromFile("randomBoatFacts.txt");  // adjust the window size as needed
+    // adjust the window size as needed
   }
 
   public void setup() {
@@ -34,22 +41,12 @@ public class Sketch extends PApplet {
     mainMenu = loadImage("images/MainMenu.png");
     score = 0;
   }
-  private String loadTextFromFile(String filePath) {
-    String[] lines = loadStrings(filePath);
-    StringBuilder sb = new StringBuilder();
-    for (String line : lines) {
-      sb.append(line).append("\n");
-    }
-    return sb.toString();
-  }
 
   public int getRandomNumber(int min, int max) {
     return (int) random(min, max + 1);
   }
 
   public void mouseClicked() {
-    int randomNumber = getRandomNumber(1, 10);
-    println("Random Number: " + randomNumber);
       if (getCurrentState() == GameState.GAME_OVER) {
     // Check if the "Play Again" button is clicked
     if (mouseX >= width / 2 - 50 && mouseX <= width / 2 + 50 &&
@@ -60,9 +57,6 @@ public class Sketch extends PApplet {
   }
   public void draw() {
     
-    if (score==25){
-      System.out.println("You reached a score of 25");
-    }
     if (mousePressed) {
       // System.out.println("X: "+ pmouseX);
       // System.out.println("Y: "+ pmouseY);
@@ -130,11 +124,17 @@ private void drawMainMenu() {
 
       // 20% chance to switch window
       if (random(0, 1) < 0.2) {
-        rndFact = true;
-        background(255);
-        textAlign(CENTER, CENTER);
-        fill(0);
-        text(text, width / 2, height / 2);
+
+        printRandomLine("randomBoatFacts.txt");
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Press Enter to Continue");
+        scan.nextLine();
+        scan.nextLine();
+        updateCountdown();
+      fill(0);
+    textSize(36);
+    textAlign(CENTER);
+        
       } else {
         double canoeAngleD = canoe.getAngle() + 0.1;
         float canoeAngleF = (float) canoeAngleD;
@@ -176,7 +176,28 @@ private void drawMainMenu() {
     isGame = true;
     isGameOver = false;
   }
-  
+    public static void printRandomLine(String filePath) {
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (!lines.isEmpty()) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(lines.size());
+            String randomLine = lines.get(randomIndex);
+            System.out.println("Random Line: " + randomLine);
+        } else {
+            System.out.println("The file is empty.");
+        }
+    }
 private void setGameOver() {
   isMainMenu = false;
   isGame = false;
@@ -269,5 +290,34 @@ private void resetGame() {
       throw new IllegalStateException("Unknown game state.");
     }
   }
+    private void updateCountdown() {
+    background(85, 107, 207); // white background
+
+    // Calculate the remaining time
+    int remainingTime = countdownTimer - (int) ((millis() - countdownStartTime) / 1000);
+    if (remainingTime <= 0) {
+      isCountdownActive = false; // Countdown finished, resume the game
+      return;
+    }
+
+    // Display countdown text
+    fill(0);
+    textSize(36);
+    textAlign(CENTER);
+    text("Resume in " + remainingTime + "...", width / 2, height / 2);
+
+    // Display the "Resume" button
+    fill(255);
+    rectMode(CENTER);
+    rect(width / 2, height / 2 + 50, 100, 30);
+    fill(0);
+    textSize(20);
+    textAlign(CENTER);
+    text("Resume", width / 2, height / 2 + 55);
+  }
+
 }
+
+
+
 
