@@ -1,13 +1,19 @@
+//import nessecary libraries
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
-
 import processing.core.*;
 
-public class Sketch extends PApplet {
 
+/**
+
+The Sketch class represents a game sketch using the Processing library.
+It extends the PApplet class.
+*/
+public class Sketch extends PApplet {
+ 
+  //initilaize certain variables, and wcreate new instances of instance variables
   static boolean barriers = false;
   boolean isEnteringUsername = false;
   PImage island;
@@ -42,6 +48,12 @@ public class Sketch extends PApplet {
     score = 0;
   }
 
+  
+  /** 
+   * @param min
+   * @param max
+   * @return int
+   */
   public int getRandomNumber(int min, int max) {
     return (int) random(min, max + 1);
   }
@@ -198,6 +210,12 @@ private void drawMainMenu() {
             System.out.println("The file is empty.");
         }
     }
+    public void countDown(int num) {
+    if (num >= 0) {
+      println(num); // Print the current number
+      countDown(num - 1); // Call the function recursively with the next number
+    }
+  }
 private void setGameOver() {
   isMainMenu = false;
   isGame = false;

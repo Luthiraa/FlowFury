@@ -70,4 +70,10 @@ public class SortedLeaderboardPrinter extends LeaderboardPrinter {
       System.out.println("Username: " + username + ", Score: " + score + ", Attempts: " + attempts);
     }
   }
+   @Override
+    public void printLeaderboard() {
+        String[][] leaderboardData = readLeaderboardData();
+        sortLeaderboardDataByScore(leaderboardData);
+        printLeaderboardData(leaderboardData);
+    }
 }

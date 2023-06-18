@@ -1,10 +1,21 @@
 import java.io.*;
 import processing.core.*;
 
+/**
+ * The leaderboard class represents a leaderboard for storing and retrieving scores.
+ */
 public class leaderboard {
 
+  // The filename of the leaderboard file.
   public static final String leaderboardFile = "leaderboard.csv";
 
+  /**
+   * Adds a score to the leaderboard.
+   *
+   * @param username the username of the player
+   * @param score    the score achieved by the player
+   * @param attempts the number of attempts made by the player
+   */
   public static void addScore(String username, int score, int attempts) {
     if (isUsernameUnique(username)) {
       try {
@@ -17,6 +28,12 @@ public class leaderboard {
     }
   }
 
+  /**
+   * Checks if a username is unique in the leaderboard.
+   *
+   * @param username the username to check for uniqueness
+   * @return true if the username is unique, false otherwise
+   */
   private static boolean isUsernameUnique(String username) {
     try (BufferedReader reader = new BufferedReader(new FileReader(leaderboardFile))) {
       String line;
@@ -30,9 +47,5 @@ public class leaderboard {
       e.printStackTrace();
     }
     return true; // Username is unique
-  }
-
-  public void checkHS() {
-    // ...existing code...
   }
 }
