@@ -7,7 +7,6 @@ import processing.core.*;
 
 
 /**
-
 The Sketch class represents a game sketch using the Processing library.
 It extends the PApplet class.
 */
@@ -15,24 +14,38 @@ public class Sketch extends PApplet {
  
   //initilaize certain variables, and wcreate new instances of instance variables
   static boolean barriers = false;
+  //boolean variable to check if the usere is entering their username
   boolean isEnteringUsername = false;
+  //initialize the island objetc (instanitied from the gate class)
   PImage island;
-  public leaderboard leaderboard;
+  // instantiate a leaderboard object form the leaderboard class
+  leaderboard leaderboard;
+   //initialize the mainMenu object from PImage
   PImage mainMenu;
+   // instantiate a canoe object form the canoe class
   Canoe canoe;
+  //set of boolean statements to control the different screens and flow of the game
   boolean isMainMenu = true;
   boolean isGame = false;
   boolean isGameOver = false;
   boolean rndFact = false;
+  // instantiate a gate object form the gate class
   Gate gate;
+  //initialize integer attempt as 0
   int attempts = 0;
+  // initialzie a string for the username
   String username = "";
-  boolean isLeftKeyPressed; // flag for left arrow key
-  boolean isRightKeyPressed; // flag for right arrow key
+  // flag for left arrow key
+  boolean isLeftKeyPressed; 
+  // flag for right arrow key
+  boolean isRightKeyPressed; 
   private int countdownTimer = 5;
+  //countdown
   private boolean isCountdownActive = false;
+  // private long to hold a value for the countdown
   private long countdownStartTime;
-  static int score; // player's score
+  // player's score
+  static int score; 
 
   public void settings() {
     size(800, 400);
@@ -85,6 +98,8 @@ public class Sketch extends PApplet {
         drawGameOver();
         break;
     }
+    isCountdownActive = true;
+    countDown(10);
   }
 
 private void drawMainMenu() {
@@ -210,6 +225,7 @@ private void drawMainMenu() {
             System.out.println("The file is empty.");
         }
     }
+
     public void countDown(int num) {
     if (num >= 0) {
       println(num); // Print the current number
