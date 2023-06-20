@@ -7,7 +7,7 @@ import processing.core.*;
 public class leaderboard {
 
   // The filename of the leaderboard file.
-  public static final String leaderboardFile = "leaderboard.csv";
+  protected static final String leaderboardFile = "leaderboard.csv";
 
   /**
    * Adds a score to the leaderboard.

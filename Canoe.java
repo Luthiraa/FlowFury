@@ -49,7 +49,8 @@ public class Canoe {
 
     /**
      * Displays the canoe on the screen.
-     * The canoe is drawn with the provided image, at the current position and rotation angle.
+     * The canoe is drawn with the provided image, at the current position and
+     * rotation angle.
      */
     public void display() {
         // Draw the canoe
@@ -70,7 +71,7 @@ public class Canoe {
         return this.speed;
     }
 
-   /**
+    /**
      * Sets the speed of the canoe.
      *
      * @param speed the new speed value for the canoe
@@ -123,7 +124,8 @@ public class Canoe {
     public void setY(float y) {
         this.y = y;
     }
-        /**
+
+    /**
      * Returns the angle of the canoe.
      *
      * @return the angle of the canoe

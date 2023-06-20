@@ -37,8 +37,4 @@ public class LeaderboardPrinter extends leaderboard {
     }
     
   }
-  public void printLeaderboard() {
-        String[][] leaderboardData = readLeaderboardData();
-        printLeaderboardData(leaderboardData);
-    }
 }
